@@ -13,7 +13,7 @@ def screenToData():
 
     thresh, image = cv2.threshold(image, 50, 255, cv2.THRESH_BINARY)  # 二值化图像
 
-    # image = cv2.Canny(image, 0, 255)  # 获取边缘
+    # image = cv2.Canny(image, 50, 100)  # 获取边缘
 
     image = cv2.resize(image, (128, 64))
     cv2.imwrite('image.png', image)
@@ -25,7 +25,7 @@ def screenToData():
             data = ''
             for i in range(8):
                 data += '0' if image_list[y * 8 + i][x] == 0 else '1'
-            data_list.append(chr(int(data, 2)).encode('ISO-8859-1'))  # 不使用utf-8是因为，一个字符可能会被编码为几个bytes
+            data_list.append(chr(int(data[::-1], 2)).encode('ISO-8859-1'))  # 不使用utf-8是因为，一个字符可能会被编码为几个bytes
 
     return data_list
 
@@ -33,11 +33,13 @@ def screenToData():
 if __name__ == '__main__':
     PORT = 'COM4'
     with serial.Serial(PORT, 115200) as ser:
+        data = bytes().join(screenToData())
+        ser.write(data)
         while True:
             time1 = time.time()
             data = bytes().join(screenToData())
-            ser.write(data)
             while not (com_input := ser.read(2)):
                 pass
+            ser.write(data)
             time2 = time.time()
             print('\rFPS: ', 1 / (time2 - time1), end='')

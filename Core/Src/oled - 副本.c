@@ -29,15 +29,6 @@ void OLED_WR_DATA(uint8_t data)
 {
 	HAL_I2C_Mem_Write(&hi2c1 ,0x78,0x40,I2C_MEMADD_SIZE_8BIT,&data,1,0x100);
 }
-// 批量写入命令函数
-void OLED_WR_CMD_Buf(uint8_t *cmds, uint16_t len) {
-    HAL_I2C_Mem_Write(&hi2c1, 0x78, 0x00, I2C_MEMADD_SIZE_8BIT, cmds, len, 100);
-}
-
-// 批量写入数据函数
-void OLED_WR_DATA_Buf(uint8_t *data, uint16_t len) {
-    HAL_I2C_Mem_Write(&hi2c1, 0x78, 0x40, I2C_MEMADD_SIZE_8BIT, data, len, 100);
-}
 //初始化oled屏幕
 void OLED_Init(void)
 { 	
@@ -45,14 +36,18 @@ void OLED_Init(void)
  
 	WriteCmd();
 }
-void OLED_Clear(void) {
-    static uint8_t zero_buf[128] = {0}; // 静态零缓冲区
-    for(uint8_t i=0; i<8; i++) {
-        OLED_WR_CMD(0xB0 + i);  // 设置页地址
-        OLED_WR_CMD(0x00);      // 列低地址
-        OLED_WR_CMD(0x10);      // 列高地址
-        OLED_WR_DATA_Buf(zero_buf, 128); // 整页清空
-    }
+//清屏
+void OLED_Clear(void)
+{
+	uint8_t i,n;		    
+	for(i=0;i<8;i++)  
+	{  
+		OLED_WR_CMD(0xb0+i);
+		OLED_WR_CMD (0x00); 
+		OLED_WR_CMD (0x10); 
+		for(n=0;n<128;n++)
+			OLED_WR_DATA(0);
+	} 
 }
 //开启OLED显示    
 void OLED_Display_On(void)
@@ -156,11 +151,42 @@ void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t Char_Size)
 			j++;
 	}
 }
+// //显示汉字
+// //hzk 用取模软件得出的数组
+// void OLED_ShowCHinese(uint8_t x,uint8_t y,uint8_t no)
+// {      			    
+// 	uint8_t t,adder=0;
+// 	OLED_Set_Pos(x,y);	
+//     for(t=0;t<16;t++)
+// 		{
+// 				OLED_WR_DATA(Hzk[2*no][t]);
+// 				adder+=1;
+//      }	
+// 		OLED_Set_Pos(x,y+1);	
+//     for(t=0;t<16;t++)
+// 			{	
+// 				OLED_WR_DATA(Hzk[2*no+1][t]);
+// 				adder+=1;
+//       }					
+// }
 
 //显示BMP图片
-void OLED_Draw12864BMP(uint8_t BMP[]) {
-    for(uint8_t y=0; y<8; y++) {
-        OLED_Set_Pos(0, y);
-        OLED_WR_DATA_Buf(BMP + y*128, 128); // 整行128字节一次传输
+void OLED_Draw12864BMP(uint8_t BMP[])
+{
+    //显示显示BMP图片128×64 
+    uint16_t j=0;
+    uint8_t x,y;
+    for(y=0; y<8; y++)
+    {
+        OLED_Set_Pos(0,y);
+        for(x=0; x<128; x++)
+        {
+#if DISPLAY_MODE
+            OLED_WR_DATA(BMP[y]);
+#else
+            OLED_WR_DATA(BMP[j++]);
+#endif
+			
+        }
     }
 }

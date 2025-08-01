@@ -20,8 +20,6 @@
 void WriteCmd(void);
 void OLED_WR_CMD(uint8_t cmd);
 void OLED_WR_DATA(uint8_t data);
-void OLED_WR_CMD_Buf(uint8_t *cmds, uint16_t len);
-void OLED_WR_DATA_Buf(uint8_t *data, uint16_t len);
 void OLED_Init(void);
 void OLED_Clear(void);
 void OLED_Display_On(void);

@@ -1,6 +1,5 @@
 --cpu Cortex-M3
 "oled12864_screen\oled.o"
-"oled12864_screen\startup_stm32f10x_md.o"
 "oled12864_screen\main.o"
 "oled12864_screen\gpio.o"
 "oled12864_screen\i2c.o"
@@ -21,6 +20,7 @@
 "oled12864_screen\stm32f1xx_hal_flash_ex.o"
 "oled12864_screen\stm32f1xx_hal_exti.o"
 "oled12864_screen\stm32f1xx_hal_i2c.o"
+"oled12864_screen\startup_stm32f103x6.o"
 "oled12864_screen\system_stm32f1xx.o"
 "oled12864_screen\usb_device.o"
 "oled12864_screen\usbd_desc.o"

@@ -390,11 +390,6 @@
               <FilePath>..\Core\Src\oled.c</FilePath>
             </File>
             <File>
-              <FileName>startup_stm32f10x_md.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\Core\Src\startup_stm32f10x_md.s</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -651,6 +646,11 @@
               <FileName>stm32f1xx_hal_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f103x6.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\startup_stm32f103x6.s</FilePath>
             </File>
           </Files>
         </Group>

@@ -15,6 +15,7 @@
                 "D:\\Keil_v5\\ARM\\ARMCC\\include",
                 "f:\\作品\\μVision\\oled12864_screen\\Core\\Src",
                 "f:\\作品\\μVision\\oled12864_screen\\Drivers\\STM32F1xx_HAL_Driver\\Src",
+                "f:\\作品\\μVision\\oled12864_screen\\MDK-ARM",
                 "f:\\作品\\μVision\\oled12864_screen\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src",
                 "f:\\作品\\μVision\\oled12864_screen\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src"
             ],
