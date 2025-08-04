@@ -1,45 +1,45 @@
 import time
-import cv2
-import serial.tools.list_ports
+import numpy as np
 from PIL import ImageGrab
+import serial
 
 
+WEIGHTS = 2 ** np.arange(7, -1, -1)
 def screenToData():
-    image = ImageGrab.grab()  # 截取屏幕
-    image.save('image.png')
+    # 截屏并直接调整大小和灰度转换
+    img = ImageGrab.grab().resize((128, 64)).convert('L')
 
-    image = cv2.imread('image.png')
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # 转换为灰度图
+    img = np.array(img)
+    img = np.where(img > 30, 1, 0).astype(np.uint8)  # 二值化图像
+    img = np.transpose(img)
+    img = np.reshape(img, (128, 8, 8))
+    img = np.transpose(img, (1, 0, 2))
+    img = np.reshape(img, (1024, 8))
 
-    thresh, image = cv2.threshold(image, 50, 255, cv2.THRESH_BINARY)  # 二值化图像
+    img = np.flip(img, axis=1)
+    img = np.dot(img, WEIGHTS)
 
-    # image = cv2.Canny(image, 50, 100)  # 获取边缘
+    # for i in img.tolist():
+    #     data.append(chr(int(''.join(i)[::-1], 2)).encode('ISO-8859-1'))
 
-    image = cv2.resize(image, (128, 64))
-    cv2.imwrite('image.png', image)
-
-    image_list = image.tolist()
-    data_list = []
-    for y in range(8):
-        for x in range(128):
-            data = ''
-            for i in range(8):
-                data += '0' if image_list[y * 8 + i][x] == 0 else '1'
-            data_list.append(chr(int(data[::-1], 2)).encode('ISO-8859-1'))  # 不使用utf-8是因为，一个字符可能会被编码为几个bytes
-
-    return data_list
+    return img.astype(np.uint8).tobytes()
 
 
 if __name__ == '__main__':
     PORT = 'COM4'
     with serial.Serial(PORT, 115200) as ser:
-        data = bytes().join(screenToData())
+        data = screenToData()
         ser.write(data)
         while True:
-            time1 = time.time()
-            data = bytes().join(screenToData())
-            while not (com_input := ser.read(2)):
-                pass
+            time_0 = time.time()
+            data = screenToData()
+            # time_1 = time.time()
+            assert ser.read(2)  # 等待同步信号
+            # time_2 = time.time()
             ser.write(data)
-            time2 = time.time()
-            print('\rFPS: ', 1 / (time2 - time1), end='')
+            time_3 = time.time()
+            print('FPS:', round(1 / (time_3 - time_0), 2))
+            # print('处理图片耗时:', time_1 - time_0)
+            # print('等待耗时:', time_2 - time_1)
+            # print('传输耗时:', time_3 - time_2)
+            print('\033[2A')

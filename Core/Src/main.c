@@ -116,7 +116,7 @@ int main(void)
       if (dataIndex >= 1024) {
         OLED_Draw12864BMP(data);
         dataIndex = 0;
-        CDC_Transmit_FS("ok", 2);
+        CDC_Transmit_FS((uint8_t *)"ok", 2);
       }
     }
   
